@@ -30,7 +30,12 @@ func GenerateJWT(secretPassword string) (string, error) {
 func ValidateJWT(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		secretPassword := os.Getenv("TODO_PASSWORD")
-		tokenString, _ := r.Cookie("token")
+		tokenString, err := r.Cookie("token")
+		if err != nil {
+			http.Error(w, "Authorization token is required", http.StatusUnauthorized)
+			return
+		}
+
 		if tokenString.Value == "" {
 			http.Error(w, "Authorization token is required", http.StatusUnauthorized)
 			return

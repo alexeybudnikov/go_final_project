@@ -17,11 +17,13 @@ func main() {
 	err := godotenv.Load()
 	if err != nil {
 		fmt.Println(err)
+		return
 	}
 
 	db, err := database.InitDatabase()
 	if err != nil {
 		fmt.Println(err)
+		return
 	}
 
 	repo := repository.NewTaskRepository(db)

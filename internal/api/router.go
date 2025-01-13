@@ -14,6 +14,8 @@ func NewRouter(service service.TaskService) *chi.Mux {
 
 	webDir := "./web"
 	r.Handle("/*", http.FileServer(http.Dir(webDir)))
+
+	r.Get("/index.html", api.ValidateJWT(handler.StartPage))
 	r.Get("/api/nextdate", handler.ApiNextDate)
 	r.Get("/api/task", api.ValidateJWT(handler.ApiTaskGet))
 	r.Get("/api/tasks", api.ValidateJWT(handler.ApiTasksGetAll))
@@ -22,5 +24,6 @@ func NewRouter(service service.TaskService) *chi.Mux {
 	r.Put("/api/task", api.ValidateJWT(handler.ApiTaskUpdate))
 	r.Delete("/api/task", api.ValidateJWT(handler.ApiDeleteTask))
 	r.Post("/api/signin", handler.LoginHanler)
+
 	return r
 }

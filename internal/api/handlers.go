@@ -241,3 +241,18 @@ func (h *Handler) LoginHanler(w http.ResponseWriter, r *http.Request) {
 	response := map[string]string{"token": token}
 	json.NewEncoder(w).Encode(response)
 }
+
+func (h *Handler) StartPage(w http.ResponseWriter, r *http.Request) {
+	tokenString, err := r.Cookie("token")
+	if err != nil {
+		http.Redirect(w, r, "/login.html", http.StatusOK)
+		return
+	}
+
+	if tokenString.Value == "" {
+		http.Redirect(w, r, "/login.html", http.StatusOK)
+		return
+	}
+
+	http.Redirect(w, r, "/index.html", http.StatusOK)
+}

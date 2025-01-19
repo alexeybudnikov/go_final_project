@@ -2,7 +2,7 @@ package repository
 
 import (
 	"database/sql"
-	"errors"
+	"fmt"
 
 	"github.com/alexeybudnikov/go_final_project/internal/models"
 )
@@ -58,6 +58,10 @@ func (r *taskRepository) GetAll() ([]models.Task, error) {
 
 		tasks = append(tasks, t)
 	}
+	err = res.Err()
+	if err != nil {
+		return nil, err
+	}
 
 	return tasks, nil
 }
@@ -70,7 +74,7 @@ func (r *taskRepository) GetByID(id int64) (models.Task, error) {
 
 	err := res.Scan(&task.ID, &task.Date, &task.Title, &task.Comment, &task.Repeat)
 	if err != nil {
-		return models.Task{}, errors.New("задача не найден")
+		return models.Task{}, fmt.Errorf("erorr while getting task: %w", err)
 	}
 
 	return task, nil

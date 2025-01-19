@@ -14,7 +14,7 @@ func ResolveHost() string {
 			port = int(eport)
 		}
 	}
-
 	host := fmt.Sprintf(":%d", port)
+	fmt.Printf("Приложение запущено. Порт приложения: %d", port)
 	return host
 }

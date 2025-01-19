@@ -55,7 +55,7 @@ func (h *Handler) ApiTaskCreate(w http.ResponseWriter, r *http.Request) {
 
 	taskId, err := h.service.CreateTask(task)
 	if err != nil {
-		response := map[string]string{"error": fmt.Sprintf("%s", err.Error())}
+		response := map[string]string{"error": fmt.Sprintf("%v", err)}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(response)
@@ -70,7 +70,7 @@ func (h *Handler) ApiTaskCreate(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) ApiTasksGetAll(w http.ResponseWriter, r *http.Request) {
 	tasks, err := h.service.GetAllTasks()
 	if err != nil {
-		response := map[string]string{"error": fmt.Sprintf("%s", err.Error())}
+		response := map[string]string{"error": fmt.Sprintf("%v", err)}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(response)
@@ -107,7 +107,7 @@ func (h *Handler) ApiTaskGet(w http.ResponseWriter, r *http.Request) {
 	}
 	task, err := h.service.GetTaskByID(int64(idParsed))
 	if err != nil {
-		response := map[string]string{"error": fmt.Sprintf("%s", err.Error())}
+		response := map[string]string{"error": fmt.Sprintf("%v", err)}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(response)
@@ -139,7 +139,7 @@ func (h *Handler) ApiTaskUpdate(w http.ResponseWriter, r *http.Request) {
 
 	taskID, err := strconv.Atoi(task.ID)
 	if err != nil {
-		response := map[string]string{"error": fmt.Sprintf("%s", err.Error())}
+		response := map[string]string{"error": fmt.Sprintf("%v", err)}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(response)
@@ -156,7 +156,7 @@ func (h *Handler) ApiTaskUpdate(w http.ResponseWriter, r *http.Request) {
 
 	err = h.service.UpdateTaskByID(t)
 	if err != nil {
-		response := map[string]string{"error": fmt.Sprintf("%s", err.Error())}
+		response := map[string]string{"error": fmt.Sprintf("%v", err)}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(response)
@@ -172,7 +172,7 @@ func (h *Handler) ApiTaskDone(w http.ResponseWriter, r *http.Request) {
 	id := r.FormValue("id")
 	parsedId, err := strconv.Atoi(id)
 	if err != nil {
-		response := map[string]string{"error": fmt.Sprintf("%s", err.Error())}
+		response := map[string]string{"error": fmt.Sprintf("%v", err)}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(response)
@@ -180,7 +180,7 @@ func (h *Handler) ApiTaskDone(w http.ResponseWriter, r *http.Request) {
 	}
 	err = h.service.DoneTask(int64(parsedId))
 	if err != nil {
-		response := map[string]string{"error": fmt.Sprintf("%s", err.Error())}
+		response := map[string]string{"error": fmt.Sprintf("%v", err)}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(response)
@@ -196,7 +196,7 @@ func (h *Handler) ApiDeleteTask(w http.ResponseWriter, r *http.Request) {
 	id := r.FormValue("id")
 	parsedId, err := strconv.Atoi(id)
 	if err != nil {
-		response := map[string]string{"error": fmt.Sprintf("%s", err.Error())}
+		response := map[string]string{"error": fmt.Sprintf("%v", err)}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(response)
@@ -204,7 +204,7 @@ func (h *Handler) ApiDeleteTask(w http.ResponseWriter, r *http.Request) {
 	}
 	err = h.service.DeleteTask(int64(parsedId))
 	if err != nil {
-		response := map[string]string{"error": fmt.Sprintf("%s", err.Error())}
+		response := map[string]string{"error": fmt.Sprintf("%v", err)}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(response)
@@ -240,19 +240,4 @@ func (h *Handler) LoginHanler(w http.ResponseWriter, r *http.Request) {
 
 	response := map[string]string{"token": token}
 	json.NewEncoder(w).Encode(response)
-}
-
-func (h *Handler) StartPage(w http.ResponseWriter, r *http.Request) {
-	tokenString, err := r.Cookie("token")
-	if err != nil {
-		http.Redirect(w, r, "/login.html", http.StatusOK)
-		return
-	}
-
-	if tokenString.Value == "" {
-		http.Redirect(w, r, "/login.html", http.StatusOK)
-		return
-	}
-
-	http.Redirect(w, r, "/index.html", http.StatusOK)
 }

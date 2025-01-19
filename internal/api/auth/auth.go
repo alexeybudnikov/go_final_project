@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"net/http"
 	"os"
 	"time"
@@ -10,6 +11,12 @@ import (
 
 type Claims struct {
 	jwt.RegisteredClaims
+}
+
+type ErrorResponse struct {
+	Code        int    `json:"code"`
+	Message     string `json:"message"`
+	RedirectURL string `json:"redirect_url, omitempty"`
 }
 
 func GenerateJWT(secretPassword string) (string, error) {
@@ -32,12 +39,26 @@ func ValidateJWT(next http.HandlerFunc) http.HandlerFunc {
 		secretPassword := os.Getenv("TODO_PASSWORD")
 		tokenString, err := r.Cookie("token")
 		if err != nil {
-			http.Error(w, "Authorization token is required", http.StatusUnauthorized)
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusUnauthorized)
+			errorResponse := ErrorResponse{
+				Code:        http.StatusUnauthorized,
+				Message:     "Authorization token is required",
+				RedirectURL: "/login.html",
+			}
+			json.NewEncoder(w).Encode(errorResponse)
 			return
 		}
 
 		if tokenString.Value == "" {
-			http.Error(w, "Authorization token is required", http.StatusUnauthorized)
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusUnauthorized)
+			errorResponse := ErrorResponse{
+				Code:        http.StatusUnauthorized,
+				Message:     "Authorization token is required",
+				RedirectURL: "/login.html",
+			}
+			json.NewEncoder(w).Encode(errorResponse)
 			return
 		}
 
